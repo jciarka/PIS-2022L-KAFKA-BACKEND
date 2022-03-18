@@ -2,12 +2,16 @@
 # prerequisits:
 #           gradle build
 # build (use correct version):
-#           docker build -t kafka-producer-app:0.0.1 --build-arg VERSION=0.0.1 .
+#           docker build -t pis-kafka-prod:0.0.1 --build-arg VERSION=0.0.1 .
 # run:
-#           sudo docker run --name kafka-producer -d -p 9090:9090 kafka-producer-app:0.0.1
+#           sudo docker run --name kafka-prod -d -p 9090:9090 pis-kafka-prod:0.0.1
 
 #push:
-#           docker push jciarka/pis-kafka-producer-app kafka-producer-app:0.0.1
+#           sudo docker tag pis-kafka-prod:0.0.1 jciarka/pis-kafka-prod:0.0.1
+#           sudo docker push jciarka/pis-kafka-prod:0.0.1
+
+# deploy:
+#           kubectl apply -f pis-kafka-prod-depl.yaml
 
 FROM openjdk:11
 ARG VERSION

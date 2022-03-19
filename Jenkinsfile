@@ -7,7 +7,8 @@ pipeline {
                 sh "apk update && 
                     apk add docker docker-compose
                     rc-update add docker default
-                    /etc/init.d/docker start"
+                    /etc/init.d/docker start
+                    "
             }
         }
 

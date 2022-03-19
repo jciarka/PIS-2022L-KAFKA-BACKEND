@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Install dependencies') {
             steps {
-                sh "apk update && apk add docker docker-compose && rc-update add docker default && /etc/init.d/docker start"
+                sh "/usr/sbin/apk update && /usr/sbin/apk add docker docker-compose && /etc/init.d/docker start"
             }
         }
 

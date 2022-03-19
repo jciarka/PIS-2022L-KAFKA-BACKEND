@@ -4,7 +4,10 @@ pipeline {
     stages {
         stage('Install dependencies') {
             steps {
-                sh "apt update && apt install docker-compose"
+                sh "apk update && 
+                    apk add docker docker-compose
+                    rc-update add docker default
+                    /etc/init.d/docker start"
             }
         }
 

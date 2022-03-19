@@ -2,6 +2,12 @@ pipeline {
     agent any
 
     stages {
+        stage('Install dependencies') {
+            steps {
+                sh "apt update && apt install docker-compose"
+            }
+        }
+
         stage('Build') {
             steps {
                 echo 'Building..'

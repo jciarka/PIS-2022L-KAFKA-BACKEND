@@ -5,7 +5,6 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building..'
-                sh "docker login -u $DOCKER_USER -p $DOCKER_PWD"
                 sh "PACKAGE_VERSION=0.0.2"
                 sh "docker build -t pis-kafka-prod:$PACKAGE_VERSION --build-arg VERSION=$PACKAGE_VERSION ."
                 sh "docker tag pis-kafka-prod:$PACKAGE_VERSION jciarka/pis-kafka-prod:$PACKAGE_VERSION"

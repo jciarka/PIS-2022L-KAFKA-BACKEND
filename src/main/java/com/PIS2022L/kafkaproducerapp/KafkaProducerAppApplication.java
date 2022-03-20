@@ -24,17 +24,17 @@ public class KafkaProducerAppApplication {
 	}
 */
 
- 	@Bean
-	CommandLineRunner commandLineTestKafkaJsonRunner(KafkaTemplate<String, TestKafkaJson> kafkaTemplate) {
-		return args -> {
-			TestKafkaJson test = new TestKafkaJson();
-			test.setElem1("Hello Kafka");
-			test.setDetails(new TestKafkaJsonDetails());
-
-			for (int i = 0; i < 10; i++) {
-				test.getDetails().setData(Integer.valueOf(i).toString());
-				kafkaTemplate.send("pis-json", test);
-			}
-		};
-	}
+// 	@Bean
+//	CommandLineRunner commandLineTestKafkaJsonRunner(KafkaTemplate<String, TestKafkaJson> kafkaTemplate) {
+//		return args -> {
+//			TestKafkaJson test = new TestKafkaJson();
+//			test.setElem1("Hello Kafka");
+//			test.setDetails(new TestKafkaJsonDetails());
+//
+//			for (int i = 0; i < 10; i++) {
+//				test.getDetails().setData(Integer.valueOf(i).toString());
+//				kafkaTemplate.send("pis-json", test);
+//			}
+//		};
+//	}
 }

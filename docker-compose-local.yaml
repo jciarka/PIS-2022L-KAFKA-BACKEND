@@ -1,9 +1,9 @@
 version: "3"
 services:
   pis-kafka-prod:
-    image: jciarka/pis-kafka-prod:0.0.1
+    image: pis-kafka-prod:0.0.2
     network_mode: "host" # use host network - enable communicating with internet
-    #    ports:
-    #      - "9090:9090"
+#    ports:
+#      - "9090:9090"
     environment:
       - KAFKA_BOOTSTRAP_SERVER=192.168.0.248:9092

@@ -4,7 +4,7 @@
 # build (use correct version):
 #           docker build -t pis-kafka-prod:0.0.1 --build-arg VERSION=0.0.1 .
 # run:
-#           sudo docker run --name kafka-prod -d -p 9090:9090 pis-kafka-prod:0.0.1
+#           sudo docker run --name kafka-prod --env KAFKA_BOOTSTRAP_SERVER=192.168.0.248:9092 -d -p 9090:9090 pis-kafka-prod:0.0.1
 
 #push:
 #           sudo docker tag pis-kafka-prod:0.0.1 jciarka/pis-kafka-prod:0.0.1

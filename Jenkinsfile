@@ -6,7 +6,7 @@ pipeline {
             steps {
                 echo 'Building..'
                 sh "PACKAGE_VERSION=0.0.2"
-                sh "docker build -t pis-kafka-prod:$PACKAGE_VERSION --build-arg VERSION=$PACKAGE_VERSION ."
+                sh `export PACKAGE_VERSION=$(grep "version =" ./build.gradle | awk '{print $3}' | sed "s/'//" | sed "s/'//")`
                 sh "docker tag pis-kafka-prod:$PACKAGE_VERSION jciarka/pis-kafka-prod:$PACKAGE_VERSION"
                 sh "docker push jciarka/pis-kafka-prod:$PACKAGE_VERSION"
                 sh "docker tag pis-kafka-prod:$PACKAGE_VERSION jciarka/pis-kafka-prod:latest"

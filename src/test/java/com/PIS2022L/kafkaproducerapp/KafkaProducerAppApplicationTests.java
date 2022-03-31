@@ -11,7 +11,7 @@ class KafkaProducerAppApplicationTests {
 	@Test
 	@DisplayName("Default test 1")
 	public void shouldReturnTrue() {
-		assertEquals(40, Integer.sum(19, 23));
+		assertEquals(42, Integer.sum(19, 23));
 	}
 
 	@Test

@@ -1,1 +1,5 @@
-rootProject.name = 'kafka-producer-app'
+rootProject.name = 'kafka-application'
+include 'kafka-consumer-app'
+include 'kafka-order-models'
+include 'kafka-producer-app'
+

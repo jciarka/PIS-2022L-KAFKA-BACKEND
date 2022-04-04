@@ -10,11 +10,14 @@ import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
 
-@Mapper(componentModel = "spring")
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+@Mapper(componentModel = "spring", imports = {LocalDateTime.class})
 public interface SelgrosOrderConverter extends Converter<MongoSelgrosOrder, KafkaSelgrosOrder> {
     public SelgrosOrderConverter INSTANCE = Mappers.getMapper(SelgrosOrderConverter.class);
 
     @Override
-//    @Mapping(source = "purchasersCode",target = "purchasersCode")
+    @Mapping(target = "receivedAt", expression ="java(LocalDateTime.now())")
     MongoSelgrosOrder convert(KafkaSelgrosOrder sourceOrder);
 }

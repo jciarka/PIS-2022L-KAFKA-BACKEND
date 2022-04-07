@@ -4,8 +4,9 @@ plugins {
     id 'java'
 }
 
-group 'com.PIS-2022L'
-version '0.0.1-SNAPSHOT'
+group = 'com.PIS-2022L'
+version = '0.0.2'
+sourceCompatibility = '11'
 
 repositories {
     mavenCentral()

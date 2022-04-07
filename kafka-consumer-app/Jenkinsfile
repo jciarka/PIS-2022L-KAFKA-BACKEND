@@ -47,14 +47,14 @@ docker push jciarka/pis-kafka-cons:latest
       }
     }
 
-    stage('Deploy') {
+    stage('Cleanup') {
       steps {
         sh '''# Cleanup local images repository
 docker rmi -f $(docker images -q jciarka/pis-kafka-cons) || true'''
       }
     }
 
-    stage('Shell script 4') {
+    stage('Deploy') {
       steps {
         sh '''#  Instal new version on current machine
 cd kafka-consumer-app

@@ -17,29 +17,34 @@ import java.util.Map;
 
 @EnableKafka
 @Configuration
-public class SelgrosKafkaConsumerConfiguration {
+public class SelgrosKafkaConsumerConfiguration
+{
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
 
-    public Map<String, Object> testKafkaSelgrosConsumerConfig() {
-        HashMap<String, Object> props = new HashMap<>();
+    private Map<String, Object> kafkaConsumerConfig()
+    {
+        final HashMap<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         return props;
     }
 
     @Bean
-    public ConsumerFactory<String, KafkaSelgrosOrder> testKafkaSelgrosConsumerFactory() {
+    public ConsumerFactory<String, KafkaSelgrosOrder> kafkaSelgrosConsumerFactory()
+    {
         return new DefaultKafkaConsumerFactory<>(
-                testKafkaSelgrosConsumerConfig(),
+                kafkaConsumerConfig(),
                 new StringDeserializer(),
-                new JsonDeserializer<>(KafkaSelgrosOrder.class));
+                new JsonDeserializer<>(KafkaSelgrosOrder.class)
+        );
     }
 
-    @Bean("KafkaSelgrosListenerContainerFactory")
-    public ConcurrentKafkaListenerContainerFactory<String, KafkaSelgrosOrder> testKafkaSelgrosListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, KafkaSelgrosOrder>
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, KafkaSelgrosOrder> kafkaSelgrosListenerContainerFactory()
+    {
+        final ConcurrentKafkaListenerContainerFactory<String, KafkaSelgrosOrder>
                 factory = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(testKafkaSelgrosConsumerFactory());
+        factory.setConsumerFactory(kafkaSelgrosConsumerFactory());
 
         return factory;
     }

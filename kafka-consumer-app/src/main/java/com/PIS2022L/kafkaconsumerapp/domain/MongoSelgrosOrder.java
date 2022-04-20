@@ -1,7 +1,7 @@
 package com.PIS2022L.kafkaconsumerapp.domain;
 
 
-import com.PIS2022L.kafkaordermodels.domain.Adress;
+import com.PIS2022L.kafkaordermodels.domain.Address;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,7 +20,7 @@ public class MongoSelgrosOrder {
     @Id
     private String id;
     private long purchasersCode;
-    private Adress deliveryAddress;
+    private Address deliveryAddress;
     private Long contactPhone;
     private LocalDateTime createdAt;
     private LocalDateTime receivedAt;

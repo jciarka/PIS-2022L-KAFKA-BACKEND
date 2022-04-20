@@ -7,7 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Adress {
+public class Address
+{
     private String countryCode;
     private String city;
     private String postalCode;

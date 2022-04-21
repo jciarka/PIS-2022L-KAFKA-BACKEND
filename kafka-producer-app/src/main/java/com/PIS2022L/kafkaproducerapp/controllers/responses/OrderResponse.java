@@ -1,4 +1,4 @@
-package com.PIS2022L.kafkaproducerapp.controllers;
+package com.PIS2022L.kafkaproducerapp.controllers.responses;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

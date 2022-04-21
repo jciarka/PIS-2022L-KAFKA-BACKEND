@@ -1,7 +1,6 @@
-package com.PIS2022L.kafkaproducerapp.controllers.kafka;
+package com.PIS2022L.kafkaproducerapp.controllers;
 
-import com.PIS2022L.kafkaproducerapp.controllers.OrderResponse;
-import com.PIS2022L.kafkaproducerapp.controllers.PathConstant;
+import com.PIS2022L.kafkaproducerapp.controllers.responses.OrderResponse;
 import com.PIS2022L.kafkaproducerapp.models.dtos.OrderDTO;
 import com.PIS2022L.kafkaproducerapp.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;

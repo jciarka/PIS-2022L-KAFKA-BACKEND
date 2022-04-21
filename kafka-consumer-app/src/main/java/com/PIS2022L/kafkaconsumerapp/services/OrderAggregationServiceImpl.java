@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,12 +25,11 @@ public class OrderAggregationServiceImpl implements OrderAggregationService
     @Override
     public List<MongoSelgrosItem> getSelgrosItemsCreatedInTimePeriod(final LocalDateTime dateFrom, final LocalDateTime dateTo)
     {
-        final long dateFromInSeconds = dateFrom.toEpochSecond(ZoneOffset.UTC);
-        final long dateToInSeconds = dateTo.toEpochSecond(ZoneOffset.UTC);
-        final List<MongoSelgrosOrder> allOrdersForTimePeriod =
-                selgrosRepository.findAll();
-
-        return allOrdersForTimePeriod.stream()
+        /*
+            Currently for the sake of simplicity it assumes that every document has the same format
+            Missing 'CreatedAt' field might result in an error :/
+        */
+        return selgrosRepository.findAll().stream()
                 .filter(order -> order.getCreatedAt().isAfter(dateFrom))
                 .filter(order -> order.getCreatedAt().isBefore(dateTo))
                 .map(MongoSelgrosOrder::getItems)

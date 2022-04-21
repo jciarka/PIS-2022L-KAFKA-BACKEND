@@ -1,0 +1,69 @@
+pipeline {
+  agent any
+  stages {
+    stage('Checkout Scm') {
+      steps {
+        git(credentialsId: 'github/jciarka', url: 'https://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@github.com/jciarka/PIS-2022L-KAFKA-PROD.git', branch: 'development')
+      }
+    }
+
+    stage('Build') {
+      steps {
+          sh '''# Build project
+./gradlew :kafka-producer-app:build
+'''
+      }
+    }
+
+    stage('Test') {
+      steps {
+          sh '''# test project
+./gradlew :kafka-producer-app:test'''
+      }
+    }
+
+    stage('Build docker') {
+      steps {
+        withCredentials([usernamePassword(usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PWD', credentialsId: 'DOCKER_REPO')]) {
+          sh '''# Build docker image
+# tag with current version and with latest
+# push to docker repository
+cd kafka-producer-app
+
+docker login -u $DOCKER_USER -p $DOCKER_PWD
+
+PACKAGE_VERSION=$(grep "version =" ./build.gradle |  awk \'{print $3}\' | sed "s/\'//" | sed "s/\'//")
+echo $PACKAGE_VERSION
+
+docker build -t pis-kafka-prod:$PACKAGE_VERSION --build-arg VERSION=$PACKAGE_VERSION .
+
+docker tag pis-kafka-prod:$PACKAGE_VERSION jciarka/pis-kafka-prod:$PACKAGE_VERSION
+docker push jciarka/pis-kafka-prod:$PACKAGE_VERSION
+
+docker tag pis-kafka-prod:$PACKAGE_VERSION jciarka/pis-kafka-prod:latest
+docker push jciarka/pis-kafka-prod:latest
+'''
+        }
+      }
+    }
+
+    stage('Cleanup') {
+      steps {
+        sh '''# Cleanup local images repository
+docker rmi -f $(docker images -q jciarka/pis-kafka-prod) || true'''
+      }
+    }
+
+    stage('Deploy') {
+      steps {
+        sh '''#  Instal new version on current machine
+cd kafka-producer-app
+docker-compose -f docker-compose.yaml down
+docker-compose -f docker-compose.yaml up -d'''
+      }
+    }
+  }
+  triggers {
+    pollSCM('* * * * *')
+  }
+}

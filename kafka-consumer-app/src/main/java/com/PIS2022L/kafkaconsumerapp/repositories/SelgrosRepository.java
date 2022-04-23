@@ -6,7 +6,12 @@ import org.springframework.data.mongodb.repository.Query;
 
 import java.util.List;
 
-public interface SelgrosRepository extends MongoRepository<MongoSelgrosOrder, String> {
+public interface SelgrosRepository extends MongoRepository<MongoSelgrosOrder, String>
+{
     @Query("{purchasersCode: ?0}")
     List<MongoSelgrosOrder> findByPurchasersCode(Integer code);
+
+    @Query("{'receivedAt': {$gt: ?0}}")
+    List<MongoSelgrosOrder> test(Integer test);
+
 }

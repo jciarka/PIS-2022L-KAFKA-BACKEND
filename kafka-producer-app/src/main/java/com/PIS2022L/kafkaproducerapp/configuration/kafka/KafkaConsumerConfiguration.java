@@ -1,4 +1,4 @@
-package com.PIS2022L.kafkaproducerapp.configuration.test;
+package com.PIS2022L.kafkaproducerapp.configuration.kafka;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -15,12 +15,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-public class KafkaConsumerConfiguration {
+public class KafkaConsumerConfiguration
+{
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
 
-    public Map<String, Object> stringConsumerConfig() {
-        HashMap<String, Object> props = new HashMap<>();
+    private Map<String, Object> stringConsumerConfig()
+    {
+        final HashMap<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
@@ -28,14 +30,16 @@ public class KafkaConsumerConfiguration {
     }
 
     @Bean
-    public ConsumerFactory<String, String> stringConsumerFactory() {
+    public ConsumerFactory<String, String> stringConsumerFactory()
+    {
         return new DefaultKafkaConsumerFactory<>(stringConsumerConfig());
     }
 
     @Bean("StringConsumerContainerFactory")
     public KafkaListenerContainerFactory<
-            ConcurrentMessageListenerContainer<String, String>> stringConsumerContainerFactory(ConsumerFactory<String, String> consumerFactory) {
-        ConcurrentKafkaListenerContainerFactory<String, String>  containerFactory = new ConcurrentKafkaListenerContainerFactory<>();
+            ConcurrentMessageListenerContainer<String, String>> stringConsumerContainerFactory(final ConsumerFactory<String, String> consumerFactory)
+    {
+        final ConcurrentKafkaListenerContainerFactory<String, String> containerFactory = new ConcurrentKafkaListenerContainerFactory<>();
         containerFactory.setConsumerFactory(consumerFactory);
         return containerFactory;
     }

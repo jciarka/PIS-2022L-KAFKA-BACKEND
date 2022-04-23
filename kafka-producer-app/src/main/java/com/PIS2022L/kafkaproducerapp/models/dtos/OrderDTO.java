@@ -1,10 +1,8 @@
-package com.PIS2022L.kafkaordermodels.domain.selgros;
-
+package com.PIS2022L.kafkaproducerapp.models.dtos;
 
 import com.PIS2022L.kafkaordermodels.domain.Address;
-import lombok.AllArgsConstructor;
+import com.PIS2022L.kafkaordermodels.domain.selgros.KafkaSelgrosItem;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
@@ -12,9 +10,8 @@ import java.util.List;
 
 @Data
 @ToString
-@NoArgsConstructor
-@AllArgsConstructor
-public class KafkaSelgrosOrder {
+public class OrderDTO
+{
     private long purchasersCode;
     private Address deliveryAddress;
     private Long contactPhone;

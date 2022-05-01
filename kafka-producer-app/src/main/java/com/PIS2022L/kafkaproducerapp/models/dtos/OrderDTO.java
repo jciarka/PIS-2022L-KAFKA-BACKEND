@@ -2,6 +2,7 @@ package com.PIS2022L.kafkaproducerapp.models.dtos;
 
 import com.PIS2022L.kafkaordermodels.domain.Address;
 import com.PIS2022L.kafkaordermodels.domain.selgros.KafkaSelgrosItem;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.ToString;
 
@@ -10,6 +11,7 @@ import java.util.List;
 
 @Data
 @ToString
+@AllArgsConstructor
 public class OrderDTO
 {
     private long purchasersCode;

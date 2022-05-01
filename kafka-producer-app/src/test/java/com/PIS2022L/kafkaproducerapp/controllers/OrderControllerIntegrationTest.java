@@ -22,6 +22,7 @@ import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.kafka.test.utils.ContainerTestUtils;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Map;
@@ -36,6 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
+@ActiveProfiles("integration")
 @AutoConfigureMockMvc
 @DirtiesContext
 @EmbeddedKafka(partitions = 1, brokerProperties = {"listeners=PLAINTEXT://localhost:9092", "port=9092"})
@@ -48,14 +50,13 @@ public class OrderControllerIntegrationTest
     @Autowired
     private MockMvc mockMvc;
 
-    private static String mockRequestBody;
-    private static KafkaMessageListenerContainer<String, KafkaSelgrosOrder> container;
-    private static BlockingQueue<ConsumerRecord<String, KafkaSelgrosOrder>> consumerRecords;
+    private final String mockRequestBody = "{ \"purchasersCode\": 6, \"deliveryAddress\": { \"countryCode\": \"PL\", \"city\": \"tyototototodd\", \"postalCode\": \"00-661\", \"street\": \"Plac DUPA\", \"buildingNumber\": \"1\", \"flatNumber\": null }, \"contactPhone\": 48500500500, \"createdAt\": [ 2022, 4, 20, 2, 36, 17, 438470000 ], \"items\": [ { \"quantity\": 1000, \"ean\": \"1\" }, { \"quantity\": 20, \"ean\": \"2\" }, { \"quantity\": 30, \"ean\": \"3\" }, { \"quantity\": 2, \"ean\": \"4\" } ], \"remarks\": null }";
+    private KafkaMessageListenerContainer<String, KafkaSelgrosOrder> container;
+    private BlockingQueue<ConsumerRecord<String, KafkaSelgrosOrder>> consumerRecords;
 
     @BeforeAll
     public void beforeAll()
     {
-        mockRequestBody = "{ \"purchasersCode\": 6, \"deliveryAddress\": { \"countryCode\": \"PL\", \"city\": \"tyototototodd\", \"postalCode\": \"00-661\", \"street\": \"Plac DUPA\", \"buildingNumber\": \"1\", \"flatNumber\": null }, \"contactPhone\": 48500500500, \"createdAt\": [ 2022, 4, 20, 2, 36, 17, 438470000 ], \"items\": [ { \"quantity\": 1000, \"ean\": \"1\" }, { \"quantity\": 20, \"ean\": \"2\" }, { \"quantity\": 30, \"ean\": \"3\" }, { \"quantity\": 2, \"ean\": \"4\" } ], \"remarks\": null }";
         consumerRecords = new LinkedBlockingQueue<>();
         final ContainerProperties containerProperties = new ContainerProperties(KafkaTopic.SELGROS);
         final Map<String, Object> consumerProperties =

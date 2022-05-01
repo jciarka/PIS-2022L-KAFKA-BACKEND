@@ -1,0 +1,19 @@
+pipeline {
+  agent any
+  stages {
+    stage('Checkout Scm') {
+      steps {
+        git(credentialsId: 'github/jciarka', url: 'https://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@github.com/jciarka/PIS-2022L-KAFKA-PROD.git', branch: 'master')
+      }
+    }
+
+    stage('Deploy') {
+      steps {
+        sh '''#  Instal new version on current machine
+cd kafka-consumer-app
+docker-compose -f docker-compose.yaml down
+docker-compose -f docker-compose.yaml up -d'''
+      }
+    }
+  }
+}

@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage('Checkout Scm') {
       steps {
-        git(credentialsId: 'github/jciarka', url: 'https://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@github.com/jciarka/PIS-2022L-KAFKA-PROD.git', branch: 'development')
+        git(credentialsId: 'github/jciarka', url: 'https://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@github.com/jciarka/PIS-2022L-KAFKA-PROD.git', branch: 'master')
       }
     }
 
@@ -53,16 +53,8 @@ docker push jciarka/pis-kafka-cons:latest
 docker rmi -f $(docker images -q jciarka/pis-kafka-cons) || true'''
       }
     }
-
-    stage('Deploy') {
-      steps {
-        sh '''#  Instal new version on current machine
-cd kafka-consumer-app
-docker-compose -f docker-compose.yaml down
-docker-compose -f docker-compose.yaml up -d'''
-      }
-    }
   }
+
   triggers {
     pollSCM('* * * * *')
   }

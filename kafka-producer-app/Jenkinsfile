@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage('Checkout Scm') {
       steps {
-        git(credentialsId: 'github/jciarka', url: 'https://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@github.com/jciarka/PIS-2022L-KAFKA-PROD.git', branch: 'development')
+        git(credentialsId: 'github/jciarka', url: 'https://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@github.com/jciarka/PIS-2022L-KAFKA-PROD.git', branch: 'master')
       }
     }
 
@@ -51,15 +51,6 @@ docker push jciarka/pis-kafka-prod:latest
       steps {
         sh '''# Cleanup local images repository
 docker rmi -f $(docker images -q jciarka/pis-kafka-prod) || true'''
-      }
-    }
-
-    stage('Deploy') {
-      steps {
-        sh '''#  Instal new version on current machine
-cd kafka-producer-app
-docker-compose -f docker-compose.yaml down
-docker-compose -f docker-compose.yaml up -d'''
       }
     }
   }

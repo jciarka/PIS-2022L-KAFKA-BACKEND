@@ -10,14 +10,10 @@ pipeline {
     stage('Deploy') {
       steps {
         sh '''#  Instal new version on current machine
-docker-compose -f kafka-docker-compose.yaml down
-docker-compose -f mongo-docker-compose.yaml down
-docker-compose -f kafka-docker-compose.yaml up -d
-docker-compose -f mongo-docker-compose.yaml up -d'''
+cd kafka-consumer-app
+docker-compose -f docker-compose.yaml down
+docker-compose -f docker-compose.yaml up -d'''
       }
     }
-  }
-  triggers {
-    pollSCM('* * * * *')
   }
 }

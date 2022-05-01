@@ -1,0 +1,9 @@
+spring:
+  kafka:
+    bootstrap-servers:
+      - localhost:6996
+    consumer:
+      auto-offset-reset: earliest
+      group-id: selgros
+test:
+  topic: selgros

@@ -10,4 +10,6 @@ import java.util.List;
 public interface OrderAggregationService
 {
     List<MongoSelgrosItem> getSelgrosItemsCreatedInTimePeriod(LocalDateTime dateFrom, LocalDateTime dateTo);
+    List<MongoSelgrosItem> getSelgrosItems(LocalDateTime dateFrom, LocalDateTime dateTo, Long purchasersCode, String ean);
+
 }

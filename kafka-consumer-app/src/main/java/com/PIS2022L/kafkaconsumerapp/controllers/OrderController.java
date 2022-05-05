@@ -2,6 +2,7 @@ package com.PIS2022L.kafkaconsumerapp.controllers;
 
 
 import com.PIS2022L.kafkaconsumerapp.domain.MongoSelgrosItem;
+import com.PIS2022L.kafkaconsumerapp.models.dto.AggregatedItemDTO;
 import com.PIS2022L.kafkaconsumerapp.models.dto.AggregatedItemsDTO;
 import com.PIS2022L.kafkaconsumerapp.services.OrderAggregationService;
 import com.PIS2022L.kafkaconsumerapp.services.TimeService;
@@ -61,7 +62,7 @@ public class OrderController
             @RequestParam(name = "ean", required = false) String ean
     )
     {
-        final List<MongoSelgrosItem> selgrosItems =
+        final List<AggregatedItemDTO> selgrosItems =
                 orderAggregationService.getSelgrosItems(dateFrom, dateTo, purchasersCode, ean);
         return new AggregatedItemsDTO(selgrosItems);
     }

@@ -2,6 +2,7 @@ package com.PIS2022L.kafkaconsumerapp.services;
 
 import com.PIS2022L.kafkaconsumerapp.domain.MongoSelgrosItem;
 import com.PIS2022L.kafkaconsumerapp.domain.MongoSelgrosOrder;
+import com.PIS2022L.kafkaconsumerapp.models.dto.AggregatedItemDTO;
 import com.PIS2022L.kafkaconsumerapp.repositories.SelgrosRepository;
 import com.mongodb.client.model.ReturnDocument;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,12 +35,18 @@ public class OrderAggregationServiceImpl implements OrderAggregationService
     }
 
     @Override
-    public List<MongoSelgrosItem> getSelgrosItems(final LocalDateTime dateFrom, final LocalDateTime dateTo, final Long purchasersCode, final String ean)
+    public List<AggregatedItemDTO> getSelgrosItems(final LocalDateTime dateFrom, final LocalDateTime dateTo, final Long purchasersCode, final String ean)
     {
-        Stream<MongoSelgrosItem> itemsStream = selgrosRepository
+        Stream<AggregatedItemDTO> itemsStream = selgrosRepository
                 .findByFiltes(dateFrom, dateTo, purchasersCode, ean)
                 .stream()
-                .map(MongoSelgrosOrder::getItems)
+                .map(x -> x.getItems().stream().map(
+                        y -> new AggregatedItemDTO(
+                            y.getEan(),
+                            y.getQuantity(),
+                            x.getReceivedAt(),
+                            x.getPurchasersCode())
+                        ).collect(Collectors.toList()))
                 .flatMap(Collection::stream)
                 .filter(x -> ean == null || x.getEan().contains(ean));;
 

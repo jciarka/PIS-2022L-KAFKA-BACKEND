@@ -10,5 +10,5 @@ import java.util.List;
 @AllArgsConstructor
 public class AggregatedItemsDTO
 {
-    private List<MongoSelgrosItem> items;
+    private List<AggregatedItemDTO> items;
 }

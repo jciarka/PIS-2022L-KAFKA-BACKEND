@@ -39,3 +39,4 @@ class OrderMapperTest extends AbstractUnitTestTemplate
         assertEquals("None", selgrosOrder.getRemarks());
     }
 }
+

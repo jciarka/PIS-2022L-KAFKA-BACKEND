@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class KafkaSelgrosItem {
-    private String Ean;
-    private Integer Quantity;
+    private String ean;
+    private Integer quantity;
 }

@@ -113,7 +113,7 @@ docker rmi -f $(docker images -q jciarka/pis-kafka-prod) || true'''
     		  <a href="https://github.com/jciarka/PIS-2022L-KAFKA-PROD/">
     		  	Github project site
           </a>
-    		  <a href="http://localhost:8888/job/docker%20deployment%20pis-frontend-jenkinsfile/build?token=producer" >
+    		  <a href="http://localhost:8888/job/docker%20deployment%20pis-prod%20jenkinsfile/build?token=producer" >
     		  	Deploy appliation
           </a>
     	  </div>

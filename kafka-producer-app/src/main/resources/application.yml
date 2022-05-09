@@ -1,0 +1,10 @@
+# app port configuration
+server:
+  port: 9090
+
+# kafka broker configuration
+spring:
+  kafka:
+    # use env variables with default port as for instance: spring.datasource.username=${SPRING_DATASOURCE_USERNAME_ENV:defaultvalue}
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVER:localhost:9092}
+    client-id: producer-selgros

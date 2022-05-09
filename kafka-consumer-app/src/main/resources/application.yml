@@ -1,0 +1,18 @@
+# app port configuration
+server:
+  port: 9091
+
+# kafka broker configuration
+spring:
+  kafka:
+    # use env variables with default port as for instance: spring.datasource.username=${SPRING_DATASOURCE_USERNAME_ENV:defaultvalue}
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVER:localhost:9092}
+    client-id: producer-selgros
+  data:
+    mongodb:
+      host: ${MONGO_SERVER_ADDRESS:localhost}
+      port: ${MONGO_SERVER_PORT:27017}
+      username: ${MONGO_SERVER_USERNAME:admin}
+      password: ${MONGO_SERVER_PASSWORD:password}
+      database: ${MONGO_SERVER_DATABASE:pis}
+      authentication-database: admin

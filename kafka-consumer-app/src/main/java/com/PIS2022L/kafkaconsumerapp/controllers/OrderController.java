@@ -2,14 +2,17 @@ package com.PIS2022L.kafkaconsumerapp.controllers;
 
 
 import com.PIS2022L.kafkaconsumerapp.domain.MongoSelgrosItem;
+import com.PIS2022L.kafkaconsumerapp.models.dto.AggregatedItemDTO;
 import com.PIS2022L.kafkaconsumerapp.models.dto.AggregatedItemsDTO;
 import com.PIS2022L.kafkaconsumerapp.services.OrderAggregationService;
 import com.PIS2022L.kafkaconsumerapp.services.TimeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -28,14 +31,39 @@ public class OrderController
         this.timeService = timeService;
     }
 
+//    @GetMapping(PathConstant.SELGROS_ITEMS)
+//    public AggregatedItemsDTO getAggregatedItems(
+//            @RequestParam(name = "dateFrom", required = false) Optional<Long> unixDateFrom,
+//            @RequestParam(name = "dateTo", required = false) Optional<Long> unixDateTo)
+//    {
+//        // We should probably start using OffSetDateTime over LocaleDateTime
+//        final LocalDateTime dateFrom = !unixDateFrom.isEmpty() ? timeService.convertUnixTimestampToLocaleDateTime(unixDateFrom.get()) : null;
+//        final LocalDateTime dateTo = !unixDateTo.isEmpty() ? timeService.convertUnixTimestampToLocaleDateTime(unixDateTo.get()) : null;
+//        final List<MongoSelgrosItem> selgrosItemsForTimePeriod =
+//                orderAggregationService.getSelgrosItemsCreatedInTimePeriod(dateFrom, dateTo);
+//        return new AggregatedItemsDTO(selgrosItemsForTimePeriod);
+//    }
+
+//    @GetMapping(PathConstant.SELGROS_ITEMS)
+//    public AggregatedItemsDTO getAggregatedItems(
+//            @RequestParam(name = "dateFrom", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateFrom,
+//            @RequestParam(name = "dateTo", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateTo)
+//    {
+//        final List<MongoSelgrosItem> selgrosItemsForTimePeriod =
+//                orderAggregationService.getSelgrosItemsCreatedInTimePeriod(dateFrom, dateTo);
+//        return new AggregatedItemsDTO(selgrosItemsForTimePeriod);
+//    }
+
     @GetMapping(PathConstant.SELGROS_ITEMS)
-    public AggregatedItemsDTO getAggregatedItems(@RequestParam("dateFrom") final Long unixDateFrom, @RequestParam("dateTo") final Long unixDateTo)
+    public AggregatedItemsDTO getAggregatedItems(
+            @RequestParam(name = "dateFrom", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateFrom,
+            @RequestParam(name = "dateTo", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateTo,
+            @RequestParam(name = "purchasersCode", required = false) Long purchasersCode,
+            @RequestParam(name = "ean", required = false) String ean
+    )
     {
-        // We should probably start using OffSetDateTime over LocaleDateTime
-        final LocalDateTime dateFrom = timeService.convertUnixTimestampToLocaleDateTime(unixDateFrom);
-        final LocalDateTime dateTo = timeService.convertUnixTimestampToLocaleDateTime(unixDateTo);
-        final List<MongoSelgrosItem> selgrosItemsForTimePeriod =
-                orderAggregationService.getSelgrosItemsCreatedInTimePeriod(dateFrom, dateTo);
-        return new AggregatedItemsDTO(selgrosItemsForTimePeriod);
+        final List<AggregatedItemDTO> selgrosItems =
+                orderAggregationService.getSelgrosItems(dateFrom, dateTo, purchasersCode, ean);
+        return new AggregatedItemsDTO(selgrosItems);
     }
 }

@@ -1,11 +1,12 @@
 package com.PIS2022L.kafkaproducerapp.services;
 
-import com.PIS2022L.kafkaproducerapp.utils.AbstractJUnitTemplate;
+import com.PIS2022L.kafkaproducerapp.utils.AbstractUnitTestTemplate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class OrderServiceTest extends AbstractJUnitTemplate
+
+public class OrderServiceTest extends AbstractUnitTestTemplate
 {
     @Autowired
     private OrderService orderService;
@@ -16,7 +17,7 @@ public class OrderServiceTest extends AbstractJUnitTemplate
     @Test
     public void validSelgrosOrderHandled()
     {
-        
+
     }
 
     @Test

@@ -35,6 +35,6 @@ public interface SelgrosRepository extends MongoRepository<MongoSelgrosOrder, St
             "]" +
         "}"
     )
-    List<MongoSelgrosOrder> findByFiltes(LocalDateTime dateFrom, LocalDateTime dateTo, Long purchasersCode, String ean);
+    List<MongoSelgrosOrder> findByFilters(LocalDateTime dateFrom, LocalDateTime dateTo, Long purchasersCode, String ean);
 
 }

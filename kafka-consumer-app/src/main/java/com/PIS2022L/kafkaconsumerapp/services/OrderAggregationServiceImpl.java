@@ -4,7 +4,6 @@ import com.PIS2022L.kafkaconsumerapp.domain.MongoSelgrosItem;
 import com.PIS2022L.kafkaconsumerapp.domain.MongoSelgrosOrder;
 import com.PIS2022L.kafkaconsumerapp.models.dto.AggregatedItemDTO;
 import com.PIS2022L.kafkaconsumerapp.repositories.SelgrosRepository;
-import com.mongodb.client.model.ReturnDocument;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +37,7 @@ public class OrderAggregationServiceImpl implements OrderAggregationService
     public List<AggregatedItemDTO> getSelgrosItems(final LocalDateTime dateFrom, final LocalDateTime dateTo, final Long purchasersCode, final String ean)
     {
         Stream<AggregatedItemDTO> itemsStream = selgrosRepository
-                .findByFiltes(dateFrom, dateTo, purchasersCode, ean)
+                .findByFilters(dateFrom, dateTo, purchasersCode, ean)
                 .stream()
                 .map(x -> x.getItems().stream().map(
                         y -> new AggregatedItemDTO(

@@ -6,7 +6,15 @@ pipeline {
         git(credentialsId: 'github/jciarka', url: 'https://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@github.com/jciarka/PIS-2022L-KAFKA-PROD.git', branch: 'master')
       }
     }
-
+    
+    stage('SonarQube analysis') {
+      steps {
+        withSonarQubeEnv('SonarQube') {
+          sh "./gradlew sonarqube"
+        }
+      }
+    }
+    
     stage('Build') {
       steps {
           sh '''# Build project

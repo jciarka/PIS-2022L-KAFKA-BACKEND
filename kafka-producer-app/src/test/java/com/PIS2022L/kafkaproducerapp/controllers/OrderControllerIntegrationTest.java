@@ -4,10 +4,9 @@ import com.PIS2022L.kafkaordermodels.domain.KafkaTopic;
 import com.PIS2022L.kafkaordermodels.domain.selgros.KafkaSelgrosOrder;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.serialization.StringDeserializer;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,7 +21,6 @@ import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.kafka.test.utils.ContainerTestUtils;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Map;
@@ -38,11 +36,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @SpringBootTest
-@ActiveProfiles("integration")
 @AutoConfigureMockMvc
 @DirtiesContext
-@EmbeddedKafka(partitions = 1, brokerProperties = {"listeners=PLAINTEXT://localhost:9092", "port=9092"})
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@EmbeddedKafka(partitions = 1, topics = {KafkaTopic.SELGROS}, brokerProperties = {"listeners=PLAINTEXT://localhost:9092", "port=9092"})
+//@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class OrderControllerIntegrationTest
 {
     @Autowired
@@ -54,8 +51,8 @@ public class OrderControllerIntegrationTest
     private KafkaMessageListenerContainer<String, KafkaSelgrosOrder> container;
     private BlockingQueue<ConsumerRecord<String, KafkaSelgrosOrder>> consumerRecords;
 
-    @BeforeAll
-    public void beforeAll()
+    @BeforeEach
+    void beforeAll()
     {
         consumerRecords = new LinkedBlockingQueue<>();
         final ContainerProperties containerProperties = new ContainerProperties(KafkaTopic.SELGROS);
@@ -72,7 +69,7 @@ public class OrderControllerIntegrationTest
         ContainerTestUtils.waitForAssignment(container, embeddedKafkaBroker.getPartitionsPerTopic());
     }
 
-    @AfterAll
+    @AfterEach
     public void tearDown()
     {
         container.stop();

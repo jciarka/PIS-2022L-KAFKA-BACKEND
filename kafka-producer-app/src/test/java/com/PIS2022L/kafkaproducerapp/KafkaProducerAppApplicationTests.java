@@ -1,22 +1,20 @@
 package com.PIS2022L.kafkaproducerapp;
 
-import org.junit.jupiter.api.DisplayName;
+import com.PIS2022L.kafkaordermodels.domain.KafkaTopic;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
+import org.springframework.kafka.test.context.EmbeddedKafka;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
-class KafkaProducerAppApplicationTests {
-	@Test
-	@DisplayName("Default test 1")
-	public void shouldReturnTrue() {
-		assertEquals(42, Integer.sum(19, 23));
-	}
-
-	@Test
-	@DisplayName("Default test 2")
-	public void shouldAlsoReturnTrue() {
-		assertEquals(42, Integer.sum(20, 22));
-	}
+@EmbeddedKafka(partitions = 1, topics = {KafkaTopic.SELGROS}, brokerProperties = {"listeners=PLAINTEXT://localhost:9092", "port=9092"})
+class KafkaProducerAppApplicationTests
+{
+    @Test
+    public void contextLoads(final ApplicationContext context)
+    {
+        assertNotNull(context);
+    }
 }

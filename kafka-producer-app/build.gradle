@@ -3,6 +3,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
     id 'maven-publish'
+    id "org.sonarqube" version "3.3"
 }
 
 group = 'com.PIS-2022L'

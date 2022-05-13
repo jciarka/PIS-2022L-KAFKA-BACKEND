@@ -34,16 +34,18 @@
             class="card-body text-center pa-1 align-self-center"
             style="height: 80px"
           >
-            <strong style="display: block">
+            <strong style="display: block" class="mt-4">
               <h6>_DOCUMENT_NAME_</h6>
             </strong>
           </div>
         </div>
       </div>
 
-      <div class="container" style="font-size: 10px; margin-top: 10px;">
+      <div class="container w-100" style="font-size: 10px; margin-top: 30px;" >
         This is a report of top clients by count of orders.
+      </div>
 
+      <div class="container w-100 text-center justify-content-center" style="font-size: 10px; margin-top: 10px;" >
         <table class="table mt-4">
           <thead>
             <tr>
@@ -51,7 +53,7 @@
               <th scope="col">Customer code</th>
               <th scope="col">Orders count</th>
               <th scope="col">Items count</th>
-              <th scope="col">Ordered items</th>
+              <th scope="col">Top 10 items [EAN(count)]</th>
             </tr>
           </thead>
           <tbody>
@@ -59,6 +61,11 @@
           </tbody>
         </table>
       </div>
+
+      <div class="w-100 text-center">
+        <img src="_DATA_CHART_" width="400" height="250" />
+      </div>
+
     </div>
   </body>
 </html>

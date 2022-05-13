@@ -1,11 +1,10 @@
 package com.PIS2022L.kafkaconsumerapp.services;
 
+import com.PIS2022L.kafkaconsumerapp.infrastructure.ChartGenerator;
 import com.PIS2022L.kafkaconsumerapp.infrastructure.PdfGenerator;
 import com.PIS2022L.kafkaconsumerapp.infrastructure.PurchaserToHtmlConverter;
 import com.PIS2022L.kafkaconsumerapp.models.PurchaserAggregatedModel;
 import com.PIS2022L.kafkaconsumerapp.repositories.SelgrosRepository;
-import com.itextpdf.html2pdf.ConverterProperties;
-import com.itextpdf.html2pdf.HtmlConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,11 +23,14 @@ public class PurchaserReportsServiceImpl implements PurchaserReportsService {
 
     private final PdfGenerator pdfGenerator;
 
+    private final ChartGenerator chartGenerator;
+
     @Autowired
-    public PurchaserReportsServiceImpl(final SelgrosRepository selgrosRepository, final PdfGenerator pdfGenerator)
+    public PurchaserReportsServiceImpl(final SelgrosRepository selgrosRepository, final PdfGenerator pdfGenerator, final ChartGenerator chartGenerator)
     {
         this.selgrosRepository = selgrosRepository;
         this.pdfGenerator = pdfGenerator;
+        this.chartGenerator = chartGenerator;
     }
 
     @Override
@@ -52,10 +54,16 @@ public class PurchaserReportsServiceImpl implements PurchaserReportsService {
         return template;
     }
 
-    private Map<String, String> preparePdfDataMapByOrdersCount(int limit, List<PurchaserAggregatedModel> clients) {
+    private Map<String, String> preparePdfDataMapByOrdersCount(int limit, List<PurchaserAggregatedModel> purchasers) throws IOException {
+        Map<String, Long> purchasersTotals = new HashMap<>();
+        purchasers.forEach(x -> purchasersTotals.put(String.valueOf(x.getPurchasersCode()), x.getTotal()));
+
         Map<String, String> pdfData = new HashMap<>();
-        pdfData.put("_TABLE_CONTENT_", PurchaserToHtmlConverter.convert(clients));
         pdfData.put("_DOCUMENT_NAME_", "Top " + limit + " purchasers by order count");
+        pdfData.put("_TABLE_CONTENT_", PurchaserToHtmlConverter.convert(purchasers));
+        pdfData.put(
+            "_DATA_CHART_", "data:image/png;base64," + chartGenerator.GenerateBarChartAsBase64("Top purchasers", "purchaser", "orders count", purchasersTotals, 400, 300 )
+        );
         return pdfData;
     }
 
@@ -80,10 +88,16 @@ public class PurchaserReportsServiceImpl implements PurchaserReportsService {
         return template;
     }
 
-    private Map<String, String> preparePdfDataMapByItemsCount(int limit, List<PurchaserAggregatedModel> clients) {
+    private Map<String, String> preparePdfDataMapByItemsCount(int limit, List<PurchaserAggregatedModel> purchasers) throws IOException {
+        Map<String, Long> purchasersTotals = new HashMap<>();
+        purchasers.forEach(x -> purchasersTotals.put(String.valueOf(x.getPurchasersCode()), x.getTotal()));
+
         Map<String, String> pdfData = new HashMap<>();
-        pdfData.put("_TABLE_CONTENT_", PurchaserToHtmlConverter.convert(clients));
         pdfData.put("_DOCUMENT_NAME_", "Top " + limit + " purchasers by items count");
+        pdfData.put("_TABLE_CONTENT_", PurchaserToHtmlConverter.convert(purchasers));
+        pdfData.put(
+                "_DATA_CHART_", "data:image/png;base64," + chartGenerator.GenerateBarChartAsBase64("Top purchasers", "purchaser", "items count", purchasersTotals, 400, 300 )
+        );
         return pdfData;
     }
 

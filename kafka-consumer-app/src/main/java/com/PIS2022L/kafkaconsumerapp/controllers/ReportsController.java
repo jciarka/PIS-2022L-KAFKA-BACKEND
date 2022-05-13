@@ -1,90 +1,108 @@
 package com.PIS2022L.kafkaconsumerapp.controllers;
 
+import com.PIS2022L.kafkaconsumerapp.models.dto.AggregatedItemsDTO;
+import com.PIS2022L.kafkaconsumerapp.services.PurchaserReportsService;
+import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.time.LocalDateTime;
+import java.util.stream.Collectors;
 
-@Controller
+@RestController
+@CrossOrigin(origins = "*")
+@RequestMapping(path = PathConstant.REPORTS_PATH)
 public class ReportsController {
+    private final PurchaserReportsService purchaserService;
+
+    public ReportsController(PurchaserReportsService purchaserService) {
+        this.purchaserService = purchaserService;
+    }
 
     @GetMapping(
+            value = "clients/byOrders",
             produces = MediaType.APPLICATION_PDF_VALUE
     )
-    public @ResponseBody byte[] getEmptyDocument() throws IOException {
-        String html = "<!DOCTYPE html>\n" +
-                "<html>\n" +
-                "<head>\n" +
-                "    <meta charset=\"utf-8\" />\n" +
-                "\t<style>\n" +
-                "\t.card {\n" +
-                "\t  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);\n" +
-                "\t  padding: 10px;\n" +
-                "\t  transition: 0.3s;\n" +
-                "\t  display: flex;\n" +
-                "\t  flex-wrap: wrap;\n" +
-                "\t  align-content: center;\n" +
-                "\t  background-color: #f5f7fa;\n" +
-                "\t}\n" +
-                "\t\n" +
-                "\tdiv.a {\n" +
-                "\t  text-align: center;\n" +
-                "\t}\n" +
-                "\n" +
-                "\t.card:hover {\n" +
-                "\t  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);\n" +
-                "\t}\n" +
-                "\n" +
-                "\t.container {\n" +
-                "\t  padding: 2px 16px;\n" +
-                "\t}\n" +
-                "\n" +
-                "\tbody {\n" +
-                "\t  font-family: Helvetica, Arial, sans-serif;\n" +
-                "\t}\n" +
-                "\n" +
-                "\ta {\n" +
-                "\t  background-color: #1F7F4C; font-size: 18px; font-family: Helvetica, Arial, sans-serif; font-weight: bold; text-decoration: none; padding: 5px 10px; color: #ffffff; border-radius: 5px; display: inline-block; mso-padding-alt: 0;>\n" +
-                "\t}\n" +
-                "\n" +
-                "\t</style>\n" +
-                "  </head>\n" +
-                "  <body>\n" +
-                "  \n" +
-                "  <div class=\"container m-4 jusutify-content-center\">\n" +
-                "  \n" +
-                "  \t<div class=\"card\" style=\"width: 40rem;\">\n" +
-                "\t  <div class=\"card-body\">\n" +
-                "\t\t  <h2>Project PIS</h2>\n" +
-                "\t  \n" +
-                "\t\t  <h4>$PROJECT_NAME - Build # $BUILD_NUMBER </br>\n" +
-                "\t\t  Has been released with status: $BUILD_STATUS</h4>\n" +
-                "\t\t  \n" +
-                "\t\t  <h4>Available actions:</h4>\n" +
-                "\t\t  \n" +
-                "\t\t  <a href=\"http://localhost:8888/job/docker%20ci-cd%20pis-frontend-jenkinsfile/\"> \n" +
-                "\t\t  \tJenkins project site\n" +
-                "\t  \t  </a>\n" +
-                "\t\t  <a href=\"https://github.com/jciarka/PIS-2022L-KAFKA-PROD-FRONT/\"> \n" +
-                "\t\t  \tGithub project site\n" +
-                "\t\t  </a>\n" +
-                "\t\t  <a href=\"http://localhost:8888/job/docker%20deployment%20pis-frontend-jenkinsfile/build?token=frontend\" > \n" +
-                "\t\t  \tDeploy appliation\n" +
-                "                 </a> \n" +
-                "\t  </div>\n" +
-                "\t</div>\n" +
-                "  </div>\n" +
-                "  </body>\n" +
-                "</html>  ";
-        ByteArrayOutputStream pdf = new ByteArrayOutputStream();
-        HtmlConverter.convertToPdf(html, pdf);
-
-        byte[] content = pdf.toByteArray();
-        pdf.close();
-        return content;
+    public @ResponseBody ResponseEntity<byte[]> GetTopPurchasersByOrdersCount(
+        @RequestParam(name = "dateFrom", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateFrom,
+        @RequestParam(name = "dateTo", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateTo,
+        @RequestParam(name = "purchasersCode", required = false, defaultValue = "10") Integer limit
+    ) {
+        try {
+            return new ResponseEntity<>(purchaserService.TopPurchasersByOrdersCount(dateFrom, dateTo, limit.intValue()), HttpStatus.OK);
+        } catch (IOException e) {
+            return new ResponseEntity<byte[]>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+
+    @GetMapping(
+            value = "clients/byItems",
+            produces = MediaType.APPLICATION_PDF_VALUE
+    )
+    public @ResponseBody ResponseEntity<byte[]> GetTopPurchasersByItemsCount(
+            @RequestParam(name = "dateFrom", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateFrom,
+            @RequestParam(name = "dateTo", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateTo,
+            @RequestParam(name = "purchasersCode", required = false, defaultValue = "10") Integer limit
+    ) {
+        try {
+            return new ResponseEntity<>(purchaserService.TopPurchasersByItemsCount(dateFrom, dateTo, limit.intValue()), HttpStatus.OK);
+        } catch (IOException e) {
+            return new ResponseEntity<byte[]>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+//    @GetMapping(
+//            produces = MediaType.APPLICATION_PDF_VALUE
+//    )
+//    public @ResponseBody byte[] getEmptyDocument() throws IOException {
+//        InputStream templateStream = this.getClass()
+//            .getClassLoader()
+//            .getResourceAsStream("templates/default.html");
+//
+//        String html = new BufferedReader(new InputStreamReader(templateStream)).lines().collect(Collectors.joining("\n"));
+//
+//        ByteArrayOutputStream pdf = new ByteArrayOutputStream();
+//
+//        ConverterProperties properties = new ConverterProperties().setBaseUri("classpath:/templates/");
+//        HtmlConverter.convertToPdf(html, pdf, properties);
+//
+//        byte[] content = pdf.toByteArray();
+//        pdf.close();
+//        return content;
+//    }
+//    public @ResponseBody byte[] getEmptyDocument() throws IOException, DocumentException {
+//        File templateFile = new File(
+//            this.getClass()
+//                .getClassLoader()
+//                .getResource("templates/default.html")
+//                .getFile());
+//
+//        Document document = Jsoup.parse(templateFile, "UTF-8");
+//        document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
+//        String xhtml = document.html();
+//
+//        ITextRenderer renderer = new ITextRenderer();
+//        SharedContext sharedContext = renderer.getSharedContext();
+//        sharedContext.setPrint(true);
+//        sharedContext.setInteractive(false);
+//        sharedContext.getTextRenderer().setSmoothingThreshold(0);
+//
+//        String baseUrl = "classpath:/templates/";
+//        renderer.setDocumentFromString(xhtml, baseUrl);
+//        renderer.layout();
+//
+//        ByteArrayOutputStream pdf = new ByteArrayOutputStream();
+//
+//        renderer.createPDF(pdf);
+//
+//        byte[] content = pdf.toByteArray();
+//        pdf.close();
+//        return content;
+//    }
 }

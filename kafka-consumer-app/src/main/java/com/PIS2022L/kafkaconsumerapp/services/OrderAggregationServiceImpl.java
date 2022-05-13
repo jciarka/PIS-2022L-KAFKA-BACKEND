@@ -53,14 +53,4 @@ public class OrderAggregationServiceImpl implements OrderAggregationService
 
         return itemsStream.collect(Collectors.toList());
     }
-
-    @PostConstruct
-    public void test(){
-        List<PurchaserAggregatedModel> model = selgrosRepository.findTopPurchasersByProductsCount(
-                LocalDateTime.parse("2022-01-04T00:00:00"),
-                LocalDateTime.parse("2022-06-04T00:00:00"),
-                1
-        );
-        System.out.println("foo");
-    }
 }

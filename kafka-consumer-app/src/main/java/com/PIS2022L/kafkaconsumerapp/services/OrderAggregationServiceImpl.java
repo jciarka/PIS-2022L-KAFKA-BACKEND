@@ -3,10 +3,12 @@ package com.PIS2022L.kafkaconsumerapp.services;
 import com.PIS2022L.kafkaconsumerapp.domain.MongoSelgrosItem;
 import com.PIS2022L.kafkaconsumerapp.domain.MongoSelgrosOrder;
 import com.PIS2022L.kafkaconsumerapp.models.dto.AggregatedItemDTO;
+import com.PIS2022L.kafkaconsumerapp.models.PurchaserAggregatedModel;
 import com.PIS2022L.kafkaconsumerapp.repositories.SelgrosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -50,5 +52,15 @@ public class OrderAggregationServiceImpl implements OrderAggregationService
                 .filter(x -> ean == null || x.getEan().contains(ean));;
 
         return itemsStream.collect(Collectors.toList());
+    }
+
+    @PostConstruct
+    public void test(){
+        List<PurchaserAggregatedModel> model = selgrosRepository.findTopPurchasersByProductsCount(
+                LocalDateTime.parse("2022-01-04T00:00:00"),
+                LocalDateTime.parse("2022-06-04T00:00:00"),
+                1
+        );
+        System.out.println("foo");
     }
 }

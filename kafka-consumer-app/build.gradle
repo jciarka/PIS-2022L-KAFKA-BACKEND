@@ -20,6 +20,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.kafka:spring-kafka'
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+    implementation 'com.itextpdf:html2pdf:3.0.0'
+    implementation group: 'jfree', name: 'jfreechart', version: '1.0.13'
     implementation project(':kafka-order-models')
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.kafka:spring-kafka-test'

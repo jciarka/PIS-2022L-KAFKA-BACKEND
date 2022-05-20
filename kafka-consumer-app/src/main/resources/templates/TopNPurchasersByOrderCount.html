@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
+      integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn"
+      crossorigin="anonymous"
+    />
+  </head>
+
+  <body>
+    <div class="container m-4 jusutify-content-center" style="width: 580px">
+      <div
+        class="row"
+        style="
+          display: flex;
+          flex-direction: row;
+          flex-wrap: nowrap;
+          justify-content: space-between;
+        "
+      >
+        <img
+          src="../static/your-logo.jpg"
+          width="80px"
+          height="80px"
+          alt="your logo"
+          style="display: block; float: left"
+        />
+        <div style="float: left; width: 30px"></div>
+        <div class="w-100">
+          <div
+            class="card-body text-center pa-1 align-self-center"
+            style="height: 80px"
+          >
+            <strong style="display: block" class="mt-4">
+              <h6>_DOCUMENT_NAME_</h6>
+            </strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="container w-100" style="font-size: 10px; margin-top: 30px;" >
+        This is a report of top clients by count of orders.
+      </div>
+
+      <div class="container w-100 text-center justify-content-center" style="font-size: 10px; margin-top: 10px;" >
+        <table class="table mt-4">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Customer code</th>
+              <th scope="col">Orders count</th>
+              <th scope="col">Items count</th>
+              <th scope="col">Top 10 items [EAN(count)]</th>
+            </tr>
+          </thead>
+          <tbody>
+            _TABLE_CONTENT_
+          </tbody>
+        </table>
+      </div>
+
+      <div class="w-100 text-center">
+        <img src="_DATA_CHART_" width="400" height="250" />
+      </div>
+
+    </div>
+  </body>
+</html>

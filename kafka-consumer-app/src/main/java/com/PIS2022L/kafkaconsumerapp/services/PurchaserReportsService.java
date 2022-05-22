@@ -9,5 +9,5 @@ import java.time.LocalDateTime;
 public interface PurchaserReportsService {
     public byte[] TopPurchasersByOrdersCount(LocalDateTime dateFrom, LocalDateTime dateTo, int limit) throws IOException;
     public byte[] TopPurchasersByItemsCount(LocalDateTime dateFrom, LocalDateTime dateTo, int limit) throws IOException;
-
+    public byte[] TopProduct(LocalDateTime dateFrom, LocalDateTime dateTo, int limit) throws IOException;
 }

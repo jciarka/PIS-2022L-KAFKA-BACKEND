@@ -1,6 +1,7 @@
 package com.PIS2022L.kafkaconsumerapp.repositories;
 
 import com.PIS2022L.kafkaconsumerapp.domain.MongoSelgrosOrder;
+import com.PIS2022L.kafkaconsumerapp.models.ProductAggregatedModel;
 import com.PIS2022L.kafkaconsumerapp.models.PurchaserAggregatedModel;
 import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -103,4 +104,43 @@ public interface SelgrosRepository extends MongoRepository<MongoSelgrosOrder, St
             "}"
     })
     List<PurchaserAggregatedModel> findTopPurchasersByProductsCount(LocalDateTime dateFrom, LocalDateTime dateTo, @Param("limit") Integer limit);
+
+
+    @Aggregation(pipeline = {
+            "{ $match: {  " +
+                    "$and: [ " +
+                        "{ $or : [ { $expr: { $eq: ['?0', 'null'] } }, { 'receivedAt': {$gt: ?0} } ] }," +
+                        "{ $or : [ { $expr: { $eq: ['?1', 'null'] } }, { 'receivedAt': {$lt: ?1} } ] }," +
+                    "]" +
+                "} " +
+            "} ",
+            "{$unwind: { " +
+                    "path: $items, " +
+                    "preserveNullAndEmptyArrays: false " +
+                "} " +
+            "} ",
+            "{ $group:  { " +
+                    "_id: '$items.ean', " +
+                    "ean: { $first: 'items.ean' }," +
+                    "itemsTotal: { $sum:  '$items.quantity'  }, " +
+                    "ordersTotal: { $sum:  1  }, " +
+                    "orders: { $push: " +
+                        "{ " +
+                            "id: $id, " +
+                            "purchasersCode: $purchasersCode, " +
+                            "deliveryAddress: $deliveryAddress, " +
+                            "contactPhone: $contactPhone, " +
+                            "createdAt: $createdAt, " +
+                            "receivedAt: $receivedAt, " +
+                            "remarks: $remarks, " +
+                        "} " +
+                    "}," +
+                "}, "+
+            "}",
+            "{$sort:{ 'itemsTotal': -1 } }",
+            "{" +
+                "$limit: ?2" +
+            "}"
+    })
+    List<ProductAggregatedModel> findTopProducts(LocalDateTime dateFrom, LocalDateTime dateTo, @Param("limit") Integer limit);
 }

@@ -10,7 +10,6 @@ import com.PIS2022L.kafkaconsumerapp.repositories.SelgrosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -20,7 +19,7 @@ import java.util.stream.Collectors;
 
 
 @Service
-public class PurchaserReportsServiceImpl implements PurchaserReportsService {
+public class ReportsServiceImpl implements ReportsService {
 
     private final SelgrosRepository selgrosRepository;
 
@@ -29,7 +28,7 @@ public class PurchaserReportsServiceImpl implements PurchaserReportsService {
     private final ChartGenerator chartGenerator;
 
     @Autowired
-    public PurchaserReportsServiceImpl(final SelgrosRepository selgrosRepository, final PdfGenerator pdfGenerator, final ChartGenerator chartGenerator)
+    public ReportsServiceImpl(final SelgrosRepository selgrosRepository, final PdfGenerator pdfGenerator, final ChartGenerator chartGenerator)
     {
         this.selgrosRepository = selgrosRepository;
         this.pdfGenerator = pdfGenerator;

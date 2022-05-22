@@ -1,9 +1,6 @@
 package com.PIS2022L.kafkaconsumerapp.controllers;
 
-import com.PIS2022L.kafkaconsumerapp.models.dto.AggregatedItemsDTO;
-import com.PIS2022L.kafkaconsumerapp.services.PurchaserReportsService;
-import com.itextpdf.html2pdf.ConverterProperties;
-import com.itextpdf.html2pdf.HtmlConverter;
+import com.PIS2022L.kafkaconsumerapp.services.ReportsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -13,17 +10,16 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
 import java.time.LocalDateTime;
-import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping(path = PathConstant.REPORTS_PATH)
 public class ReportsController {
-    private final PurchaserReportsService purchaserService;
+    private final ReportsService reportsService;
 
     @Autowired
-    public ReportsController(PurchaserReportsService purchaserService) {
-        this.purchaserService = purchaserService;
+    public ReportsController(ReportsService reportsService) {
+        this.reportsService = reportsService;
     }
 
     @GetMapping(
@@ -36,7 +32,7 @@ public class ReportsController {
         @RequestParam(name = "limit", required = false, defaultValue = "10") Integer limit
     ) {
         try {
-            return new ResponseEntity<>(purchaserService.TopPurchasersByOrdersCount(dateFrom, dateTo, limit.intValue()), HttpStatus.OK);
+            return new ResponseEntity<>(reportsService.TopPurchasersByOrdersCount(dateFrom, dateTo, limit.intValue()), HttpStatus.OK);
         } catch (IOException e) {
             return new ResponseEntity<byte[]>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -52,7 +48,7 @@ public class ReportsController {
             @RequestParam(name = "limit", required = false, defaultValue = "10") Integer limit
     ) {
         try {
-            return new ResponseEntity<>(purchaserService.TopPurchasersByItemsCount(dateFrom, dateTo, limit.intValue()), HttpStatus.OK);
+            return new ResponseEntity<>(reportsService.TopPurchasersByItemsCount(dateFrom, dateTo, limit.intValue()), HttpStatus.OK);
         } catch (IOException e) {
             return new ResponseEntity<byte[]>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -68,7 +64,7 @@ public class ReportsController {
             @RequestParam(name = "limit", required = false, defaultValue = "10") Integer limit
     ) {
         try {
-            return new ResponseEntity<>(purchaserService.TopProduct(dateFrom, dateTo, limit.intValue()), HttpStatus.OK);
+            return new ResponseEntity<>(reportsService.TopProduct(dateFrom, dateTo, limit.intValue()), HttpStatus.OK);
         } catch (IOException e) {
             return new ResponseEntity<byte[]>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

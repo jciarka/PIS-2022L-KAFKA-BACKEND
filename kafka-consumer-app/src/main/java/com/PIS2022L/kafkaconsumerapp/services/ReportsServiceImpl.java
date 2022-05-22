@@ -1,16 +1,12 @@
 package com.PIS2022L.kafkaconsumerapp.services;
 
-import com.PIS2022L.kafkaconsumerapp.infrastructure.ChartGenerator;
-import com.PIS2022L.kafkaconsumerapp.infrastructure.PdfGenerator;
-import com.PIS2022L.kafkaconsumerapp.infrastructure.ProductToHtmlConverter;
-import com.PIS2022L.kafkaconsumerapp.infrastructure.PurchaserToHtmlConverter;
+import com.PIS2022L.kafkaconsumerapp.infrastructure.*;
 import com.PIS2022L.kafkaconsumerapp.models.ProductAggregatedModel;
 import com.PIS2022L.kafkaconsumerapp.models.PurchaserAggregatedModel;
 import com.PIS2022L.kafkaconsumerapp.repositories.SelgrosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -20,7 +16,7 @@ import java.util.stream.Collectors;
 
 
 @Service
-public class PurchaserReportsServiceImpl implements PurchaserReportsService {
+public class ReportsServiceImpl implements ReportsService {
 
     private final SelgrosRepository selgrosRepository;
 
@@ -28,12 +24,18 @@ public class PurchaserReportsServiceImpl implements PurchaserReportsService {
 
     private final ChartGenerator chartGenerator;
 
+    private final ProductToHtmlConverter productToHtmlConverter;
+
+    private final PurchaserToHtmlConverter purchaserToHtmlConverter;
+
     @Autowired
-    public PurchaserReportsServiceImpl(final SelgrosRepository selgrosRepository, final PdfGenerator pdfGenerator, final ChartGenerator chartGenerator)
+    public ReportsServiceImpl(final SelgrosRepository selgrosRepository, final PdfGenerator pdfGenerator, final ChartGenerator chartGenerator, ProductToHtmlConverter productToHtmlConverter, PurchaserToHtmlConverter purchaserToHtmlConverter)
     {
         this.selgrosRepository = selgrosRepository;
         this.pdfGenerator = pdfGenerator;
         this.chartGenerator = chartGenerator;
+        this.productToHtmlConverter = productToHtmlConverter;
+        this.purchaserToHtmlConverter = purchaserToHtmlConverter;
     }
 
     @Override
@@ -63,7 +65,7 @@ public class PurchaserReportsServiceImpl implements PurchaserReportsService {
 
         Map<String, String> pdfData = new HashMap<>();
         pdfData.put("_DOCUMENT_NAME_", "Top " + limit + " purchasers by order count");
-        pdfData.put("_TABLE_CONTENT_", PurchaserToHtmlConverter.convert(purchasers));
+        pdfData.put("_TABLE_CONTENT_", purchaserToHtmlConverter.convert(purchasers));
         pdfData.put(
             "_DATA_CHART_", "data:image/png;base64," + chartGenerator.GenerateBarChartAsBase64("Top purchasers", "purchaser", "orders count", purchasersTotals, 400, 300 )
         );
@@ -97,7 +99,7 @@ public class PurchaserReportsServiceImpl implements PurchaserReportsService {
 
         Map<String, String> pdfData = new HashMap<>();
         pdfData.put("_DOCUMENT_NAME_", "Top " + limit + " purchasers by items count");
-        pdfData.put("_TABLE_CONTENT_", PurchaserToHtmlConverter.convert(purchasers));
+        pdfData.put("_TABLE_CONTENT_", purchaserToHtmlConverter.convert(purchasers));
         pdfData.put(
                 "_DATA_CHART_", "data:image/png;base64," + chartGenerator.GenerateBarChartAsBase64("Top purchasers", "purchaser", "items count", purchasersTotals, 400, 300 )
         );
@@ -131,7 +133,7 @@ public class PurchaserReportsServiceImpl implements PurchaserReportsService {
 
         Map<String, String> pdfData = new HashMap<>();
         pdfData.put("_DOCUMENT_NAME_", "Top " + limit + " products");
-        pdfData.put("_TABLE_CONTENT_", ProductToHtmlConverter.convert(products));
+        pdfData.put("_TABLE_CONTENT_", productToHtmlConverter.convert(products));
         pdfData.put(
                 "_DATA_CHART_", "data:image/png;base64," + chartGenerator.GenerateBarChartAsBase64("Top products", "EAN", "items count", productTotals, 400, 300 )
         );

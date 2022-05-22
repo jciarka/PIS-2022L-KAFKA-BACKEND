@@ -8,6 +8,7 @@ import com.PIS2022L.kafkaordermodels.domain.Address;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ProductToHtmlConverter {
@@ -42,21 +43,25 @@ public class ProductToHtmlConverter {
     }
 
     private static String convertOrders(List<MongoSelgrosOrder> items) {
-        return  String.join(", ",
-            items.stream()
-                .sorted((MongoSelgrosOrder order1, MongoSelgrosOrder order2) -> {
-                            int order1Len = order1.getItems() != null ?
-                                order1.getItems().size() : 0;
-                            int order2Len = order2.getItems() != null ?
-                                    order2.getItems().size() : 0;
+            Map<Long, List<MongoSelgrosOrder>> ordersPerPurchasers = items.stream()
+                    .collect(Collectors.groupingBy(MongoSelgrosOrder::getPurchasersCode));
 
-                            return  order1Len > order2Len ? 1 :
+            return String.join(", ",
+                ordersPerPurchasers.keySet()
+                    .stream()
+                    .sorted((Long purchaser1, Long purchaser2) -> {
+                            int order1Len = ordersPerPurchasers.get(purchaser1) != null ?
+                                    ordersPerPurchasers.get(purchaser1).size() : 0;
+                            int order2Len = ordersPerPurchasers.get(purchaser2) != null ?
+                                    ordersPerPurchasers.get(purchaser2).size() : 0;
+
+                            return  order1Len < order2Len ? 1 :
                                     order1Len == order2Len ? 0 : -1;
-                    }
-                )
-                .limit(10)
-                .map(x -> x.getPurchasersCode() + "(" + (x.getItems() != null ? x.getItems().size() : 0) + ")")
-                .collect(Collectors.toList())
+                        }
+                    )
+                    .limit(10)
+                    .map(x -> x + "(" + (ordersPerPurchasers.get(x) != null ? ordersPerPurchasers.get(x).size() : 0) + ")")
+                    .collect(Collectors.toList())
             );
     }
 }

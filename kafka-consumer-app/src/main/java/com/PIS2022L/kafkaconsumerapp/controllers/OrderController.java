@@ -31,29 +31,6 @@ public class OrderController
         this.timeService = timeService;
     }
 
-//    @GetMapping(PathConstant.SELGROS_ITEMS)
-//    public AggregatedItemsDTO getAggregatedItems(
-//            @RequestParam(name = "dateFrom", required = false) Optional<Long> unixDateFrom,
-//            @RequestParam(name = "dateTo", required = false) Optional<Long> unixDateTo)
-//    {
-//        // We should probably start using OffSetDateTime over LocaleDateTime
-//        final LocalDateTime dateFrom = !unixDateFrom.isEmpty() ? timeService.convertUnixTimestampToLocaleDateTime(unixDateFrom.get()) : null;
-//        final LocalDateTime dateTo = !unixDateTo.isEmpty() ? timeService.convertUnixTimestampToLocaleDateTime(unixDateTo.get()) : null;
-//        final List<MongoSelgrosItem> selgrosItemsForTimePeriod =
-//                orderAggregationService.getSelgrosItemsCreatedInTimePeriod(dateFrom, dateTo);
-//        return new AggregatedItemsDTO(selgrosItemsForTimePeriod);
-//    }
-
-//    @GetMapping(PathConstant.SELGROS_ITEMS)
-//    public AggregatedItemsDTO getAggregatedItems(
-//            @RequestParam(name = "dateFrom", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateFrom,
-//            @RequestParam(name = "dateTo", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateTo)
-//    {
-//        final List<MongoSelgrosItem> selgrosItemsForTimePeriod =
-//                orderAggregationService.getSelgrosItemsCreatedInTimePeriod(dateFrom, dateTo);
-//        return new AggregatedItemsDTO(selgrosItemsForTimePeriod);
-//    }
-
     @GetMapping(PathConstant.SELGROS_ITEMS)
     public AggregatedItemsDTO getAggregatedItems(
             @RequestParam(name = "dateFrom", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateFrom,

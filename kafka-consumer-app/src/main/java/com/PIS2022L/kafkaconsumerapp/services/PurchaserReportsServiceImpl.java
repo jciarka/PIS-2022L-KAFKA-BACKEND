@@ -2,12 +2,15 @@ package com.PIS2022L.kafkaconsumerapp.services;
 
 import com.PIS2022L.kafkaconsumerapp.infrastructure.ChartGenerator;
 import com.PIS2022L.kafkaconsumerapp.infrastructure.PdfGenerator;
+import com.PIS2022L.kafkaconsumerapp.infrastructure.ProductToHtmlConverter;
 import com.PIS2022L.kafkaconsumerapp.infrastructure.PurchaserToHtmlConverter;
+import com.PIS2022L.kafkaconsumerapp.models.ProductAggregatedModel;
 import com.PIS2022L.kafkaconsumerapp.models.PurchaserAggregatedModel;
 import com.PIS2022L.kafkaconsumerapp.repositories.SelgrosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -100,5 +103,42 @@ public class PurchaserReportsServiceImpl implements PurchaserReportsService {
         );
         return pdfData;
     }
+
+    @Override
+    public byte[] TopProduct(LocalDateTime dateFrom, LocalDateTime dateTo, int limit) throws IOException {
+        List<ProductAggregatedModel> products = selgrosRepository.findTopProducts(dateFrom, dateTo, limit);
+
+        Map<String, String> pdfData = prepareTopProductPdfDataMap(limit, products);
+        String template = prepareTopProductTemplate();
+
+        byte[] pdf = pdfGenerator.convertToPdf(template, pdfData,"classpath:/templates/");
+
+        return pdf;
+    }
+
+    private String prepareTopProductTemplate() {
+        InputStream templateStream = this.getClass()
+                .getClassLoader()
+                .getResourceAsStream("templates/TopNProducts.html");
+
+        String template = new BufferedReader(new InputStreamReader(templateStream)).lines().collect(Collectors.joining("\n"));
+        return template;
+    }
+
+    private Map<String, String> prepareTopProductPdfDataMap(int limit, List<ProductAggregatedModel> products) throws IOException {
+        Map<String, Long> productTotals = new HashMap<>();
+        products.forEach(x -> productTotals.put(String.valueOf(x.getEan()), x.getItemsTotal()));
+
+        Map<String, String> pdfData = new HashMap<>();
+        pdfData.put("_DOCUMENT_NAME_", "Top " + limit + " products");
+        pdfData.put("_TABLE_CONTENT_", ProductToHtmlConverter.convert(products));
+        pdfData.put(
+                "_DATA_CHART_", "data:image/png;base64," + chartGenerator.GenerateBarChartAsBase64("Top products", "EAN", "items count", productTotals, 400, 300 )
+        );
+        return pdfData;
+    }
+
+
+
 
 }

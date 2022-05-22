@@ -4,6 +4,7 @@ import com.PIS2022L.kafkaconsumerapp.models.dto.AggregatedItemsDTO;
 import com.PIS2022L.kafkaconsumerapp.services.PurchaserReportsService;
 import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 public class ReportsController {
     private final PurchaserReportsService purchaserService;
 
+    @Autowired
     public ReportsController(PurchaserReportsService purchaserService) {
         this.purchaserService = purchaserService;
     }
@@ -31,7 +33,7 @@ public class ReportsController {
     public @ResponseBody ResponseEntity<byte[]> GetTopPurchasersByOrdersCount(
         @RequestParam(name = "dateFrom", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateFrom,
         @RequestParam(name = "dateTo", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateTo,
-        @RequestParam(name = "purchasersCode", required = false, defaultValue = "10") Integer limit
+        @RequestParam(name = "limit", required = false, defaultValue = "10") Integer limit
     ) {
         try {
             return new ResponseEntity<>(purchaserService.TopPurchasersByOrdersCount(dateFrom, dateTo, limit.intValue()), HttpStatus.OK);
@@ -47,7 +49,7 @@ public class ReportsController {
     public @ResponseBody ResponseEntity<byte[]> GetTopPurchasersByItemsCount(
             @RequestParam(name = "dateFrom", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateFrom,
             @RequestParam(name = "dateTo", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateTo,
-            @RequestParam(name = "purchasersCode", required = false, defaultValue = "10") Integer limit
+            @RequestParam(name = "limit", required = false, defaultValue = "10") Integer limit
     ) {
         try {
             return new ResponseEntity<>(purchaserService.TopPurchasersByItemsCount(dateFrom, dateTo, limit.intValue()), HttpStatus.OK);
@@ -56,53 +58,20 @@ public class ReportsController {
         }
     }
 
+    @GetMapping(
+            value = "products",
+            produces = MediaType.APPLICATION_PDF_VALUE
+    )
+    public @ResponseBody ResponseEntity<byte[]> GetTopProducts(
+            @RequestParam(name = "dateFrom", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateFrom,
+            @RequestParam(name = "dateTo", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateTo,
+            @RequestParam(name = "limit", required = false, defaultValue = "10") Integer limit
+    ) {
+        try {
+            return new ResponseEntity<>(purchaserService.TopProduct(dateFrom, dateTo, limit.intValue()), HttpStatus.OK);
+        } catch (IOException e) {
+            return new ResponseEntity<byte[]>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
-//    @GetMapping(
-//            produces = MediaType.APPLICATION_PDF_VALUE
-//    )
-//    public @ResponseBody byte[] getEmptyDocument() throws IOException {
-//        InputStream templateStream = this.getClass()
-//            .getClassLoader()
-//            .getResourceAsStream("templates/default.html");
-//
-//        String html = new BufferedReader(new InputStreamReader(templateStream)).lines().collect(Collectors.joining("\n"));
-//
-//        ByteArrayOutputStream pdf = new ByteArrayOutputStream();
-//
-//        ConverterProperties properties = new ConverterProperties().setBaseUri("classpath:/templates/");
-//        HtmlConverter.convertToPdf(html, pdf, properties);
-//
-//        byte[] content = pdf.toByteArray();
-//        pdf.close();
-//        return content;
-//    }
-//    public @ResponseBody byte[] getEmptyDocument() throws IOException, DocumentException {
-//        File templateFile = new File(
-//            this.getClass()
-//                .getClassLoader()
-//                .getResource("templates/default.html")
-//                .getFile());
-//
-//        Document document = Jsoup.parse(templateFile, "UTF-8");
-//        document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
-//        String xhtml = document.html();
-//
-//        ITextRenderer renderer = new ITextRenderer();
-//        SharedContext sharedContext = renderer.getSharedContext();
-//        sharedContext.setPrint(true);
-//        sharedContext.setInteractive(false);
-//        sharedContext.getTextRenderer().setSmoothingThreshold(0);
-//
-//        String baseUrl = "classpath:/templates/";
-//        renderer.setDocumentFromString(xhtml, baseUrl);
-//        renderer.layout();
-//
-//        ByteArrayOutputStream pdf = new ByteArrayOutputStream();
-//
-//        renderer.createPDF(pdf);
-//
-//        byte[] content = pdf.toByteArray();
-//        pdf.close();
-//        return content;
-//    }
 }

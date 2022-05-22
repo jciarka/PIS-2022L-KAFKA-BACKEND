@@ -121,12 +121,11 @@ public interface SelgrosRepository extends MongoRepository<MongoSelgrosOrder, St
             "} ",
             "{ $group:  { " +
                     "_id: '$items.ean', " +
-                    "ean: { $first: 'items.ean' }," +
+                    "ean: { $first: '$items.ean' }," +
                     "itemsTotal: { $sum:  '$items.quantity'  }, " +
                     "ordersTotal: { $sum:  1  }, " +
                     "orders: { $push: " +
                         "{ " +
-                            "id: $id, " +
                             "purchasersCode: $purchasersCode, " +
                             "deliveryAddress: $deliveryAddress, " +
                             "contactPhone: $contactPhone, " +

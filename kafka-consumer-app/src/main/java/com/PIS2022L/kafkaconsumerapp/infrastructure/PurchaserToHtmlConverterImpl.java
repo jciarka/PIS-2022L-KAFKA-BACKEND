@@ -57,7 +57,7 @@ public class PurchaserToHtmlConverterImpl implements PurchaserToHtmlConverter {
         StringBuilder builder = new StringBuilder();
         builder.append(address.getPostalCode() + " " + address.getCity() + "\n");
         builder.append(address.getStreet() + " " + address.getBuildingNumber() +
-                (address.getBuildingNumber() != null ? address.getBuildingNumber() : "") + "\n");
+                (address.getFlatNumber() != null ? "/" + address.getFlatNumber() : "") + "\n");
 
         return  builder.toString();
     }

@@ -1,6 +1,7 @@
 package com.PIS2022L.kafkaproducerapp.controllers;
 
 import com.PIS2022L.kafkaproducerapp.controllers.responses.OrderResponse;
+import com.PIS2022L.kafkaproducerapp.models.dtos.DhlOrderDto;
 import com.PIS2022L.kafkaproducerapp.models.dtos.OrderDTO;
 import com.PIS2022L.kafkaproducerapp.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,13 @@ public class OrderController
     public ResponseEntity<OrderResponse> postSelgrosOrder(@RequestBody final OrderDTO orderDTO)
     {
         orderService.handleSelgrosOrder(orderDTO);
+        return new ResponseEntity<>(new OrderResponse("A new selgros order has been retrieved!"), HttpStatus.OK);
+    }
+
+    @PostMapping(PathConstant.DHL_RESOURCE)
+    public ResponseEntity<OrderResponse> postDhlOrder(@RequestBody final DhlOrderDto orderDTO)
+    {
+        orderService.handleDhlOrder(orderDTO);
         return new ResponseEntity<>(new OrderResponse("A new selgros order has been retrieved!"), HttpStatus.OK);
     }
 }

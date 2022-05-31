@@ -23,10 +23,17 @@ public class OrderAggregationServiceImpl implements OrderAggregationService
     private final DhlRepository dhlRepository;
 
     @Autowired
-    public OrderAggregationServiceImpl(final SelgrosRepository selgrosRepository, DhlRepository dhlRepository)
+    public OrderAggregationServiceImpl(final SelgrosRepository selgrosRepository, final DhlRepository dhlRepository)
     {
         this.selgrosRepository = selgrosRepository;
         this.dhlRepository = dhlRepository;
+    }
+
+
+    @Override
+    public List<MongoSelgrosOrder> getSelgrosOrdersCreatedInTimePeriod(final LocalDateTime dateFrom, final LocalDateTime dateTo)
+    {
+        return selgrosRepository.findByReceivedAtBetween(dateFrom, dateTo);
     }
 
     @Override
@@ -41,25 +48,27 @@ public class OrderAggregationServiceImpl implements OrderAggregationService
     @Override
     public List<AggregatedItemDTO> getSelgrosItems(final LocalDateTime dateFrom, final LocalDateTime dateTo, final Long purchasersCode, final String ean)
     {
-        Stream<AggregatedItemDTO> itemsStream = selgrosRepository
+        final Stream<AggregatedItemDTO> itemsStream = selgrosRepository
                 .findByFilters(dateFrom, dateTo, purchasersCode, ean)
                 .stream()
                 .map(x -> x.getItems().stream().map(
                         y -> new AggregatedItemDTO(
-                            y.getEan(),
-                            y.getQuantity(),
-                            x.getReceivedAt(),
-                            x.getPurchasersCode())
-                        ).collect(Collectors.toList()))
+                                y.getEan(),
+                                y.getQuantity(),
+                                x.getReceivedAt(),
+                                x.getPurchasersCode()
+                        )
+                ).collect(Collectors.toList()))
                 .flatMap(Collection::stream)
-                .filter(x -> ean == null || x.getEan().contains(ean));;
+                .filter(x -> ean == null || x.getEan().contains(ean));
 
         return itemsStream.collect(Collectors.toList());
     }
 
     @Override
-    public List<DhlAggregatedItemDTO> getDhlItems(DhlItemsFilter filter) {
-        List<DhlAggregatedItemDTO> items = dhlRepository.findByFilters(
+    public List<DhlAggregatedItemDTO> getDhlItems(final DhlItemsFilter filter)
+    {
+        final List<DhlAggregatedItemDTO> items = dhlRepository.findByFilters(
                 filter.getDateFrom(),
                 filter.getDateTo(),
                 filter.getPurchasersCode(),

@@ -73,11 +73,27 @@ public class ExcelReportImpl implements ExcelReport
                     row.getCell(6).setCellValue(order.getDeliveryAddress().getCity());
                     row.getCell(7).setCellValue(order.getDeliveryAddress().getPostalCode());
                     row.getCell(8).setCellValue(order.getDeliveryAddress().getCountryCode());
-                    row.getCell(9).setCellValue(order.getContactPhone());
+                    row.getCell(9).setCellValue(formatContactPhone(order.getContactPhone()));
                     row.getCell(10).setCellValue(order.getRemarks());
                 } catch (final NullPointerException ignored) { }
             }
         }
+    }
+
+    private String formatContactPhone(final Long contactPhone)
+    {
+        final String stringContactPhone = String.valueOf(contactPhone);
+
+        if (stringContactPhone.length() == 9)
+        {
+            return stringContactPhone;
+        }
+
+        final String countryCallingCode = stringContactPhone.substring(0, 2);
+        final String firstPart = stringContactPhone.substring(2, 5);
+        final String secondPart = stringContactPhone.substring(5, 8);
+        final String thirdPart = stringContactPhone.substring(8, 11);
+        return String.format("(+%s) %s %s %s", countryCallingCode, firstPart, secondPart, thirdPart);
     }
 
     private Workbook openWorkbookFromTemplate() throws IOException

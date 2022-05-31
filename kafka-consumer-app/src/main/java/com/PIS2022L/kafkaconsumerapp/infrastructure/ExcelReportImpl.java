@@ -35,17 +35,25 @@ public class ExcelReportImpl implements ExcelReport
     public byte[] getExcelReport(final String filename, final LocalDateTime dateFrom, final LocalDateTime dateTo) throws IOException
     {
         final Workbook workbook = openWorkbookFromTemplate();
-        populateRows(workbook, dateFrom, dateTo);
+        final Sheet sheet = workbook.getSheetAt(0);
+        addDateHeader(sheet, dateFrom, dateTo);
+        populateRows(sheet, dateFrom, dateTo);
         return createResponse(workbook);
     }
 
-    private void populateRows(final Workbook workbook, final LocalDateTime dateFrom, final LocalDateTime dateTo)
+    private void addDateHeader(final Sheet sheet, final LocalDateTime dateFrom, final LocalDateTime dateTo)
+    {
+        final Row firstRow = sheet.getRow(0);
+        final String dateHeader = String.format("%s - %s", dateFrom.toLocalDate(), dateTo.toLocalDate());
+        firstRow.getCell(5).setCellValue(dateHeader);
+    }
+
+    private void populateRows(final Sheet sheet, final LocalDateTime dateFrom, final LocalDateTime dateTo)
     {
         final List<MongoSelgrosOrder> selgrosItemList =
                 orderAggregationService.getSelgrosOrdersCreatedInTimePeriod(dateFrom, dateTo);
-        final Sheet sheet = workbook.getSheetAt(0);
-        final Iterator<Row> rowIterator = sheet.rowIterator();
 
+        final Iterator<Row> rowIterator = sheet.rowIterator();
         rowIterator.next();
         rowIterator.next();
         rowIterator.next();
@@ -58,7 +66,7 @@ public class ExcelReportImpl implements ExcelReport
                 try
                 {
                     row.getCell(1).setCellValue(order.getPurchasersCode());
-                    row.getCell(2).setCellValue(Long.parseLong(orderItem.getEan()));
+                    row.getCell(2).setCellValue(orderItem.getEan());
                     row.getCell(3).setCellValue(orderItem.getQuantity());
                     row.getCell(4).setCellValue(order.getReceivedAt().toLocalDate().toString());
                     row.getCell(5).setCellValue(order.getDeliveryAddress().getStreet());

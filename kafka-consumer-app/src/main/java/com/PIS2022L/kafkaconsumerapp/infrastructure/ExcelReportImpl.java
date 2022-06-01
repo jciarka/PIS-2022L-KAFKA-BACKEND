@@ -6,18 +6,16 @@ import com.PIS2022L.kafkaconsumerapp.services.OrderAggregationService;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ExcelReportImpl implements ExcelReport
@@ -98,9 +96,9 @@ public class ExcelReportImpl implements ExcelReport
 
     private Workbook openWorkbookFromTemplate() throws IOException
     {
-        final File f = new ClassPathResource("templates/selgros_order_list_template.xlsx").getFile();
-        final FileInputStream file = new FileInputStream(f);
-        return new XSSFWorkbook(file);
+        return WorkbookFactory.create(
+                Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream("templates/selgros_order_list_template.xlsx"))
+        );
     }
 
     private byte[] createResponse(final Workbook workbook)

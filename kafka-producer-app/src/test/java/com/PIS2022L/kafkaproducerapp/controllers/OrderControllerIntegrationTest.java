@@ -38,8 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @DirtiesContext
-@EmbeddedKafka(partitions = 1, topics = {KafkaTopic.SELGROS}, brokerProperties = {"listeners=PLAINTEXT://localhost:9092", "port=9092"})
-//@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@EmbeddedKafka(partitions = 1, topics = {KafkaTopic.SELGROS}, bootstrapServersProperty = "spring.kafka.bootstrap-servers")
 public class OrderControllerIntegrationTest
 {
     @Autowired
